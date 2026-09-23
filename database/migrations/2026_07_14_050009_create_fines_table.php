@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('fines', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('return_id')->constrained('returns')->cascadeOnDelete();
+            $table->foreignId('member_id')->constrained('members')->restrictOnDelete();
+            $table->decimal('amount', 12, 2)->default(0);
+            $table->decimal('paid_amount', 12, 2)->default(0);
+            $table->enum('status', ['unpaid', 'paid', 'partial'])->default('unpaid');
+            $table->date('paid_date')->nullable();
+            $table->text('notes')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('fines');
+    }
+};
